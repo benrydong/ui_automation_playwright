@@ -1,0 +1,17 @@
+{
+  "lengthErrors": {
+    "subject": "Subject must be between 5 and 100 characters.",
+    "phone": "Phone must be between 11 and 21 characters.",
+    "message": "Message must be between 20 and 2000 characters."
+  },
+  "blankErrors": {
+    "subject": "Subject may not be blank",
+    "email": "Email may not be blank",
+    "phone": "Phone may not be blank",
+    "name": "Name may not be blank",
+    "message": "Message may not be blank"
+  },
+  "formatErrors": {
+    "email": "must be a well-formed email address"
+  }
+}
