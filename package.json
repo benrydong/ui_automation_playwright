@@ -2,13 +2,21 @@
   "name": "benry",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:qa": "cross-env ENV=qa npx playwright test",
+    "test:stage": "cross-env ENV=stage npx playwright test",
+    "test:prod": "cross-env ENV=prod npx playwright test",
+    "test:qa:smoke": "cross-env ENV=qa npx playwright test --grep '@smoke'",
+    "test:stage:sanity": "cross-env ENV=stage npx playwright test --grep '@sanity'",
+    "test:prod:negative": "cross-env ENV=prod npx playwright test --grep '@negative'"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.52.0",
-    "@types/node": "^22.15.29"
+    "@types/node": "^22.15.29",
+    "cross-env": "^7.0.3"
   }
 }

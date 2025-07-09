@@ -5,7 +5,7 @@ test('basic home page tests', {
   tag: '@smoke',
 }, async ({ page }) => {
     const home = new HomePage(page);
-    await page.goto('https://automationintesting.online/');
+    await page.goto('/');
     await home.clickBookNowButton();
     await expect(page).toHaveURL(/#book/);
     await expect(home.contactInfoCard).toBeVisible();

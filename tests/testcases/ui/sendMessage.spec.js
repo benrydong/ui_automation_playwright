@@ -4,21 +4,21 @@ import messageUsForm from '../../fixtures/messageUsForm.json' assert { type: 'js
 import messageUsFormInvalidInput from '../../fixtures/messageUsFormInvalidInput.json' assert { type: 'json' }
 import messageUsFormErrorMessages from '../../fixtures/messageUsFormErrorMessages.json' assert { type: 'json' }
 
-test('Send message on message form happy path', {
+test('Send message from message form', {
   tag: '@sanity',
 }, async ({ page }) => {
     const home = new HomePage(page);
-    await page.goto('https://automationintesting.online/')
+    await page.goto('/')
     await home.fillContactForm(messageUsForm)
     await home.clickSubmitMessage()
     await expect(home.postMessageUs).toContainText(messageUsForm.subject)
     await expect(home.postMessageUs).toContainText(messageUsForm.name)
 });
-test('Validate error messages', {
+test('Validate error messages from message form', {
   tag: '@negative',
 }, async ({ page }) => {
     const home = new HomePage(page);
-    await page.goto('https://automationintesting.online/')
+    await page.goto('/')
     await home.fillContactForm(messageUsFormInvalidInput)
     await home.clickSubmitMessage()
     await expect(home.messageUsCard).toContainText(messageUsFormErrorMessages.blankErrors.name)

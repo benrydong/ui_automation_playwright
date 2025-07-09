@@ -12,6 +12,14 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
+//add environment config logic
+const env = process.env.ENV || 'qa'; // default to QA
+
+const baseURLs = {
+  qa: 'https://automationintesting.online/',
+  stage: 'https://automationintesting.online/stage',
+  prod: 'https://automationintesting.online/prod'
+};
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
@@ -26,10 +34,9 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
-
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    baseURL: baseURLs[env],
+    headless: true,
     trace: 'on-first-retry',
   },
 
