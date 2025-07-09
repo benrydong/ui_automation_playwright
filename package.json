@@ -6,9 +6,9 @@
     "test:qa": "cross-env ENV=qa npx playwright test",
     "test:stage": "cross-env ENV=stage npx playwright test",
     "test:prod": "cross-env ENV=prod npx playwright test",
-    "test:qa:smoke": "cross-env ENV=qa npx playwright test --grep '@smoke'",
+    "test:qa:negative": "cross-env ENV=qa npx playwright test --grep '@negative'",
     "test:stage:sanity": "cross-env ENV=stage npx playwright test --grep '@sanity'",
-    "test:prod:negative": "cross-env ENV=prod npx playwright test --grep '@negative'"
+    "test:prod:smoke": "cross-env ENV=prod npx playwright test --grep '@smoke'"
   },
   "keywords": [],
   "author": "",
