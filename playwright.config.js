@@ -17,8 +17,8 @@ const env = process.env.ENV || 'qa'; // default to QA
 
 const baseURLs = {
   qa: 'https://automationintesting.online/',
-  stage: 'https://automationintesting.online/stage',
-  prod: 'https://automationintesting.online/prod'
+  stage: 'https://automationintesting.online/',
+  prod: 'https://automationintesting.online/'
 };
 export default defineConfig({
   testDir: './tests',
@@ -32,6 +32,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
+  //timeout override
+  timeout: 10000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */

@@ -17,15 +17,33 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Playwright tests in QA
-      run: npm run test:qa
-    - name: Run Playwright tests in Stage
-      run: npm run test:stage
-    - name: Run Playwright tests in Prod
-      run: npm run test:prod
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+    - name: Run QA Tests
+      run: |
+        npm run test:qa -- --reporter=html
+        mv playwright-report playwright-report-qa
+    - name: Run Stage Tests
+      run: |
+        npm run test:stage -- --reporter=html
+        mv playwright-report playwright-report-stage
+    - name: Run Prod Tests
+      run: |
+        npm run test:prod -- --reporter=html
+        mv playwright-report playwright-report-prod
+    - name: Upload QA Report
+      uses: actions/upload-artifact@v4
       with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+        name: playwright-report-qa
+        path: playwright-report-qa/
+        retention-days: 10
+    - name: Upload Stage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report-stage
+        path: playwright-report-stage/
+        retention-days: 10
+    - name: Upload Prod Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report-prod
+        path: playwright-report-prod/
+        retention-days: 10
