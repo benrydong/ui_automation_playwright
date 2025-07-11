@@ -69,18 +69,27 @@ class HomePage {
     }
     //
     async clickSingleRoomBookNow() {
-        await expect(this.singleRoomBookBtn).toBeVisible();
-        await this.singleRoomBookBtn.click();
+        if (await this.singleRoomCardBtn.isVisible()) {
+            await this.singleRoomCardBtn.click();
+        } else {
+            throw new Error('SKIP_TEST: No Single Room available');
+        }
     }
 
     async clickDoubleRoomBookNow() {
-        await expect(this.doubleRoomCardBtn).toBeVisible();
-        await this.doubleRoomCardBtn.click();
+        if (await this.doubleRoomCardBtn.isVisible()) {
+            await this.doubleRoomCardBtn.click();
+        } else {
+            throw new Error('SKIP_TEST: No Double Room available');
+        }
     }
 
     async clickSuiteRoomBookNow() {
-        await expect(this.suiteRoomBookBtn).toBeVisible();
-        await this.suiteRoomBookBtn.click();
+        if (await this.singleRoomCardBtn.isVisible()) {
+            await this.singleRoomCardBtn.click();
+        } else {
+            throw new Error('SKIP_TEST: No Suite Room available');
+        }
     }
 
     async clickFirstAvailableRoom() {

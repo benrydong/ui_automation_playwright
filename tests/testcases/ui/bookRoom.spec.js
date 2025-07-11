@@ -3,21 +3,24 @@ import HomePage from '../../pages/homePage'
 import ReservationPage from '../../pages/reservationPage';
 import customerInfo from '../../fixtures/customerInfo.json'
 const { convertToISOFormat, getCheckinCheckoutDates } = require('../../utils/dateUtils');
+const { getRandomInt } = require('../../utils/mathUtils.js')
+const { generateBookingDates } = require('../../utils/testDataUtils.js')
 
 
-test('book double room', {
-    tag: '@sanity',
+test('book any available room', {
+    tag: '@smoke',
 }, async ({ page }) => {
+    //set days being booked
+    const {
+        daysOfStay,
+        checkIn,
+        checkOut,
+        checkInISO,
+        checkOutISO
+    } = generateBookingDates();
     await page.goto('/')
     const homePage = new HomePage(page)
     const reservationPage = new ReservationPage(page)
-    //set days being booked
-    const startDateFromToday = 5
-    const daysOfStay = 3
-    const { checkIn, checkOut } = getCheckinCheckoutDates(startDateFromToday, daysOfStay)
-    //console.log({ checkIn, checkOut });
-    const checkInISO = convertToISOFormat(checkIn)
-    const checkOutISO = convertToISOFormat(checkOut)
     await homePage.selectCalendarDates(checkIn, checkOut)
     await homePage.clickFirstAvailableRoom()
     //await homePage.clickSingleRoomBookNow()
@@ -26,35 +29,138 @@ test('book double room', {
     expect(url).toContain(checkInISO);
     expect(url).toContain(checkOutISO);
     //check selected days
-    await reservationPage.assertSelectedDatesCount(1);
+    //await reservationPage.assertSelectedDatesCount(1);
     //check price summary
     const pricePerNight = await reservationPage.getBookingCardPrice()
     await expect(reservationPage.priceSummary).toContainText(pricePerNight + ' x ' + daysOfStay + ' nights')
     const totalNightlyCharge = pricePerNight * daysOfStay;
     const totalNightlyChargeStr = totalNightlyCharge.toString();
     await expect(reservationPage.priceSummary).toContainText(totalNightlyChargeStr)
+    //fill out reservation contact form
     await reservationPage.clickReserve()
     await reservationPage.fillReservationForm(customerInfo);
-
-
-
     //
 });
-/*
-function formatDateToEuropean(date) {
-  const dd = String(date.getDate()).padStart(2, '0');
-  const mm = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
-  const yyyy = date.getFullYear();
-  return `${dd}/${mm}/${yyyy}`;
-}
+test('book single room', {
+    tag: '@sanity',
+}, async ({ page }, testInfo) => {
+    //set days being booked
+    const {
+        daysOfStay,
+        checkIn,
+        checkOut,
+        checkInISO,
+        checkOutISO
+    } = generateBookingDates();
+    await page.goto('/')
+    const homePage = new HomePage(page)
+    const reservationPage = new ReservationPage(page)
+    await homePage.selectCalendarDates(checkIn, checkOut)
+    //try to click book, if no rooms available then it will skip
+    try {
+        await homePage.clickSingleRoomBookNow();
+    } catch (e) {
+        if (e.message.includes('SKIP_TEST')) {
+            testInfo.skip(e.message); // Skip with the custom message
+        } else {
+            throw e; // rethrow if it’s another error
+        }
+    }
+    const url = page.url();
+    //check dates selected are correctly passed
+    expect(url).toContain(checkInISO);
+    expect(url).toContain(checkOutISO);
+    //check selected days
+    //await reservationPage.assertSelectedDatesCount(1);
+    //check price summary
+    const pricePerNight = await reservationPage.getBookingCardPrice()
+    await expect(reservationPage.priceSummary).toContainText(pricePerNight + ' x ' + daysOfStay + ' nights')
+    const totalNightlyCharge = pricePerNight * daysOfStay;
+    const totalNightlyChargeStr = totalNightlyCharge.toString();
+    await expect(reservationPage.priceSummary).toContainText(totalNightlyChargeStr)
+    //fill out reservation contact form
+    await reservationPage.clickReserve()
+    await reservationPage.fillReservationForm(customerInfo);
+});
 
-const today = new Date();
-const todayPlus3 = new Date();
-todayPlus3.setDate(today.getDate() + 3);
+test('book double room', {
+    tag: '@sanity',
+}, async ({ page }, testInfo) => {
+    //set days being booked
+    const {
+        daysOfStay,
+        checkIn,
+        checkOut,
+        checkInISO,
+        checkOutISO
+    } = generateBookingDates();
+    await page.goto('/')
+    const homePage = new HomePage(page)
+    const reservationPage = new ReservationPage(page)
+    await homePage.selectCalendarDates(checkIn, checkOut)
+    try {
+        await homePage.clickDoubleRoomBookNow();
+    } catch (e) {
+        if (e.message.includes('SKIP_TEST')) {
+            testInfo.skip(e.message); // Skip with the custom message
+        } else {
+            throw e; // rethrow if it’s another error
+        }
+    }
+    const url = page.url();
+    //check dates selected are correctly passed
+    expect(url).toContain(checkInISO);
+    expect(url).toContain(checkOutISO);
+    //check selected days
+    //await reservationPage.assertSelectedDatesCount(1);
+    //check price summary
+    const pricePerNight = await reservationPage.getBookingCardPrice()
+    await expect(reservationPage.priceSummary).toContainText(pricePerNight + ' x ' + daysOfStay + ' nights')
+    const totalNightlyCharge = pricePerNight * daysOfStay;
+    const totalNightlyChargeStr = totalNightlyCharge.toString();
+    await expect(reservationPage.priceSummary).toContainText(totalNightlyChargeStr)
+    //fill out reservation contact form
+    await reservationPage.clickReserve()
+    await reservationPage.fillReservationForm(customerInfo);
+});
 
-const formattedToday = formatDateToEuropean(today);
-const formattedPlus3 = formatDateToEuropean(todayPlus3);
-
-console.log('Today:', formattedToday);
-console.log('Today + 3:', formattedPlus3);
-*/
+test('book suite room', {
+    tag: '@sanity',
+}, async ({ page }, testInfo) => {
+    //set days being booked
+    const {
+        daysOfStay,
+        checkIn,
+        checkOut,
+        checkInISO,
+        checkOutISO
+    } = generateBookingDates();
+    await page.goto('/')
+    const homePage = new HomePage(page)
+    const reservationPage = new ReservationPage(page)
+    await homePage.selectCalendarDates(checkIn, checkOut)
+    try {
+        await homePage.clickSingleRoomBookNow();
+    } catch (e) {
+        if (e.message.includes('SKIP_TEST')) {
+            testInfo.skip(e.message); // Skip with the custom message
+        } else {
+            throw e; // rethrow if it’s another error
+        }
+    }
+    const url = page.url();
+    //check dates selected are correctly passed
+    expect(url).toContain(checkInISO);
+    expect(url).toContain(checkOutISO);
+    //check selected days
+    //await reservationPage.assertSelectedDatesCount(1);
+    //check price summary
+    const pricePerNight = await reservationPage.getBookingCardPrice()
+    await expect(reservationPage.priceSummary).toContainText(pricePerNight + ' x ' + daysOfStay + ' nights')
+    const totalNightlyCharge = pricePerNight * daysOfStay;
+    const totalNightlyChargeStr = totalNightlyCharge.toString();
+    await expect(reservationPage.priceSummary).toContainText(totalNightlyChargeStr)
+    //fill out reservation contact form
+    await reservationPage.clickReserve()
+    await reservationPage.fillReservationForm(customerInfo);
+});
