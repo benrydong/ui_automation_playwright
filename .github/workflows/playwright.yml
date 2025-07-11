@@ -30,13 +30,13 @@ jobs:
       - name: Run Stage Tests
         continue-on-error: true
         run: |
-          npm run test:stage -- --reporter=html
+          npm run test:stage:sanity -- --reporter=html
           mv playwright-report playwright-report-stage || true
 
       - name: Run Prod Tests
         continue-on-error: true
         run: |
-          npm run test:prod -- --reporter=html
+          npm run test:prod:smoke -- --reporter=html
           mv playwright-report playwright-report-prod || true
 
       - name: Upload QA Report
