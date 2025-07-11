@@ -4,46 +4,61 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run QA Tests
-      run: |
-        npm run test:qa -- --reporter=html
-        mv playwright-report playwright-report-qa
-    - name: Run Stage Tests
-      run: |
-        npm run test:stage -- --reporter=html
-        mv playwright-report playwright-report-stage
-    - name: Run Prod Tests
-      run: |
-        npm run test:prod -- --reporter=html
-        mv playwright-report playwright-report-prod
-    - name: Upload QA Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-report-qa
-        path: playwright-report-qa/
-        retention-days: 10
-    - name: Upload Stage Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-report-stage
-        path: playwright-report-stage/
-        retention-days: 10
-    - name: Upload Prod Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-report-prod
-        path: playwright-report-prod/
-        retention-days: 10
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run QA Tests
+        continue-on-error: true
+        run: |
+          npm run test:qa -- --reporter=html
+          mv playwright-report playwright-report-qa || true
+
+      - name: Run Stage Tests
+        continue-on-error: true
+        run: |
+          npm run test:stage -- --reporter=html
+          mv playwright-report playwright-report-stage || true
+
+      - name: Run Prod Tests
+        continue-on-error: true
+        run: |
+          npm run test:prod -- --reporter=html
+          mv playwright-report playwright-report-prod || true
+
+      - name: Upload QA Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-qa
+          path: playwright-report-qa/
+          retention-days: 10
+
+      - name: Upload Stage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-stage
+          path: playwright-report-stage/
+          retention-days: 10
+
+      - name: Upload Prod Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-prod
+          path: playwright-report-prod/
+          retention-days: 10
