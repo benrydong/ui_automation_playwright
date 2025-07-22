@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test:qa": "cross-env ENV=qa npx playwright test",
-    "test:stage": "cross-env ENV=stage npx playwright test",
-    "test:prod": "cross-env ENV=prod npx playwright test",
-    "test:qa:negative": "cross-env ENV=qa npx playwright test --grep '@negative'",
-    "test:stage:sanity": "cross-env ENV=stage npx playwright test --grep '@sanity'",
-    "test:prod:smoke": "cross-env ENV=prod npx playwright test --grep '@smoke'"
+    "test:qa": "cross-env ENV=qa CI=true npx playwright test",
+    "test:stage": "cross-env ENV=stage CI=true npx playwright test",
+    "test:prod": "cross-env ENV=prod CI=true npx playwright test",
+    "test:qa:negative": "cross-env ENV=qa CI=true playwright test --grep '@negative'",
+    "test:stage:sanity": "cross-env ENV=stage CI=true playwright test --grep '@sanity'",
+    "test:prod:smoke": "cross-env ENV=prod CI=true npx playwright test --grep '@smoke'"
   },
   "keywords": [],
   "author": "",

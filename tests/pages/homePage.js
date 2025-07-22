@@ -23,12 +23,12 @@ class HomePage {
         this.checkInInput = page.locator('input[type="text"]').nth(0);
         this.checkOutInput = page.locator('input[type="text"]').nth(1);
         this.checkAvailabilityBtn = page.getByRole('button', { name: 'Check Availability' })
-        this.singleRoomCard = page.locator('img[alt="Single Room"]')
-        this.doubleRoomCard = page.locator('h5.card-title', { hasText: 'Double' })
-        this.suiteRoomCard = page.locator('h5.card-title', { hasText: 'Suite' })
-        this.singleRoomCardBtn = page.locator('div.room-card', { has: page.locator('img[alt="Single Room"]') }).getByRole('link', { name: 'Book now' })
-        this.doubleRoomCardBtn = page.locator('div.room-card', { has: page.locator('h5.card-title', { hasText: 'Double' }) }).getByRole('link', { name: 'Book now' })
-        this.suiteRoomCardBtn = page.locator('div.room-card', { has: page.locator('h5.card-title', { hasText: 'Suite' }) }).getByRole('link', { name: 'Book now' })
+        this.singleRoomCard = page.getByRole('heading', { name: 'Single' })
+        this.doubleRoomCard = page.getByRole('heading', { name: 'Double' })
+        this.suiteRoomCard = page.getByRole('heading', { name: 'Suite' })
+        this.singleRoomCardBtn = page.locator('.card', { has: page.getByRole('heading', { name: 'Single' }) }).getByRole('link', { name: 'Book now' })
+        this.doubleRoomCardBtn = page.locator('.card', { has: page.getByRole('heading', { name: 'Double' }) }).getByRole('link', { name: 'Book now' })
+        this.suiteRoomCardBtn = page.locator('.card', { has: page.getByRole('heading', { name: 'Suite' }) }).getByRole('link', { name: 'Book now' })
         this.roomCards = page.locator('.room-card');
         this.firstRoomBookButton = this.roomCards.first().locator('text=Book now');
     }
@@ -69,7 +69,7 @@ class HomePage {
     }
     //
     async clickSingleRoomBookNow() {
-        if (await this.singleRoomCardBtn.isVisible()) {
+        if (await this.singleRoomCard.isVisible()) {
             await this.singleRoomCardBtn.click();
         } else {
             throw new Error('SKIP_TEST: No Single Room available');
@@ -77,7 +77,7 @@ class HomePage {
     }
 
     async clickDoubleRoomBookNow() {
-        if (await this.doubleRoomCardBtn.isVisible()) {
+        if (await this.doubleRoomCard.isVisible()) {
             await this.doubleRoomCardBtn.click();
         } else {
             throw new Error('SKIP_TEST: No Double Room available');
@@ -85,7 +85,7 @@ class HomePage {
     }
 
     async clickSuiteRoomBookNow() {
-        if (await this.singleRoomCardBtn.isVisible()) {
+        if (await this.singleRoomCard.isVisible()) {
             await this.singleRoomCardBtn.click();
         } else {
             throw new Error('SKIP_TEST: No Suite Room available');
